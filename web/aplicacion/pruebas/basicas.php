@@ -20,6 +20,24 @@ function cuerpo()
 Esto es html
 <?php 
     echo "esto esta hecho";
+    $var1 = 25;
+    $cad1 = 'esto es una cadena';
+
+    $var1 += 12;
+    echo $var1;
+
+    $una_cadena='hola';
+    $unaCadena = 'adios';
+
+    $var1 -= 17;
+    echo $var1;
+    $unaCadena = 45;
+    echo $unaCadena;
+
+    if (isset($cadena2)) {
+        echo $cadena2;
+    }
+
  ?>
 <?php
 
