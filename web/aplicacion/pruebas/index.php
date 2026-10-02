@@ -16,7 +16,13 @@ finCuerpo();
 
 //vista
 function cabecera()
-{}
+{
+
+    /**
+     * Esto va en el head
+     */
+
+}
 
 //vista
 function cuerpo()
