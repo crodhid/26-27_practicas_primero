@@ -22,8 +22,12 @@ function cuerpo()
 {
 ?>
     <br><br>
+<<<<<<< HEAD
     Hola, estás en Index.php
     Hola me llamo cristian
     estoy en la rama dev
+=======
+    <a href="./aplicacion/pruebas/index.php">Acceso a pruebas</a>
+>>>>>>> main
 <?php
 }
