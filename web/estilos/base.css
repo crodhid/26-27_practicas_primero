@@ -24,6 +24,11 @@ body {
     font-style: italic;
 }
 
+#barraUbicacion{
+    background-color: aliceblue;
+    color: black;
+}
+
 .boton{
     background-color: blue;
     color:white;
