@@ -3,6 +3,17 @@ include_once(dirname(__FILE__) . "/../../cabecera.php");
 //controlador
 
 /**
+ * Barra de ubicacion
+ */
+ $ubicacion = [
+ "pagina principal"=> "../../index.php",
+ "relacion 1"=> "./index.php",
+ "Ejercicio 3"=>"Ejercicio3.php"
+
+ ];
+
+
+/**
  * Creamos el array al ser dinámicos no hay que especificar memoria ninguna
  */
 $array1 = [];
@@ -75,7 +86,7 @@ inicioCabecera("APLICACION PRIMER TRIMESTRE"); //hola
 
 cabecera();
 finCabecera();
-inicioCuerpo("2DAW APLICACION");
+inicioCuerpo("2DAW APLICACION", $ubicacion);
 cuerpo($array1, $array2, $array3); //llamo a la vista
 finCuerpo();
 // **********************************************************

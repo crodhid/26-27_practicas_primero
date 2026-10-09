@@ -4,7 +4,12 @@ include_once(dirname(__FILE__) . "/../../cabecera.php");
 
 
 
+ $ubicacion = [
+ "pagina principal"=> "../../index.php",
+ "relacion 1"=> "./index.php",
+ "Ejercicio 1"=>"Ejercicio1.php"
 
+ ];
 
 
 
@@ -16,7 +21,7 @@ inicioCabecera("APLICACION PRIMER TRIMESTRE");//hola
 
 cabecera();
 finCabecera();
-inicioCuerpo("2DAW APLICACION");
+inicioCuerpo("2DAW APLICACION", $ubicacion);
 cuerpo(); //llamo a la vista
 finCuerpo();
 // **********************************************************

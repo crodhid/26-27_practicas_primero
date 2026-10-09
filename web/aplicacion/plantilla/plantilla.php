@@ -50,7 +50,10 @@ function finCabecera()
 <?php
 }
 
-function inicioCuerpo(string $cabecera, array $ubicacion =[])
+/**
+ * La interrogacion hace que si esta vacio no me salga el style
+ */
+function inicioCuerpo(string $cabecera, ?array $ubicacion = null)
 {
     global $acceso;
 
@@ -66,52 +69,41 @@ function inicioCuerpo(string $cabecera, array $ubicacion =[])
             <div id="barraLogin">
 
             </div>
-            <div id="barraMenu">
+            <div id="menuPrincipal">
                 <ul>
-                    <li><a href="/index.php">Inicio</a></li>
+                    <li><a href="../../index.php">Inicio</a></li>
                     <li><a href="/aplicacion/pruebas/index.php">Ejemplos básicos</a></li>
+                    <li><a href="../relacion1/index.php">Relación 1</a></li>
                 </ul>
 
             </div>
 
             <div id="barraUbicacion">
-                <?php
-                if ($ubicacion) {
-                    foreach ($ubicacion as $elemento) {
-                        if (isset($elemento["ENLACE"])) {
-                            echo "<a href='{$elemento["ENLACE"]}'>";
-                            }
-                            echo $elemento["TEXTO"];
-                        if (isset($elemento["ADICIONAL"])) {
-                            echo $elemento["ADICIONAL"];
-                        }    else
-                                echo "&nbsp;&nbsp";
-                        
+                <ul>
+                    <!--  -->
+                    <?php
 
-                        if (isset($elemento["ENLACE"])) {
-                            echo "</a>";
-                            }
-
-                        
-                }
-                }
-                ?>
+                    if ($ubicacion !== null) {
+                        mostrarBarraUbicacion($ubicacion);
+                    }
+                    ?>
+                </ul>
             </div>
 
             <div>
-            <?php
-        }
+                <?php
 
-        function finCuerpo()
-        {
-            ?>
-                <br />
-                <br />
+}
+                function finCuerpo()
+                {
+                ?>
+                    <br />
+                    <br />
             </div>
             <footer>
                 <hr width="90%" />
                 <div>
-                    &copy; Copyright by Profesor
+                    &copy; Copyright by Cristian Rodríguez Hidalgo
                 </div>
             </footer>
         </div>
@@ -119,4 +111,23 @@ function inicioCuerpo(string $cabecera, array $ubicacion =[])
 
     </html>
 <?php
-        }
+                
+}            
+
+            function mostrarBarraUbicacion(array $ubicacion)
+            {
+                echo "<nav class='barraModdle'>";
+                $total = count($ubicacion);
+                $contador = 0;
+
+                foreach ($ubicacion as $nombre => $url) {
+                    $contador++;
+                    if ($contador < $total) {
+                        echo "<a href='{$url}'>{$nombre}</a> &raquo; ";
+                    } else {
+                        echo "<span>{$nombre}</span>";
+                    }
+                }
+
+                echo "</nav><br>";
+            }
