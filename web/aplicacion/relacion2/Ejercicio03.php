@@ -4,7 +4,7 @@ include_once(dirname(__FILE__) . "/../../cabecera.php");
 
  $ubicacion = [
  "pagina principal"=> "../../index.php",
- "relacion 1"=> "./index.php",
+ "relacion 2"=> "./index.php",
  "Ejercicio 3"=>"Ejercicio3.php"
  ];
 
