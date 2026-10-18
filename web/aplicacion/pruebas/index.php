@@ -32,5 +32,7 @@ function cuerpo()
     Elemento de prueba
     <br><br>
     <a href="basicas.php">Funcionamiento básico</a> 
+    <br>
+    <a href="cadenas.php">Prueba cadenas</a>
 <?php
 }
