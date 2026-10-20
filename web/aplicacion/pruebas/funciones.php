@@ -21,7 +21,10 @@ function cabecera()
 function cuerpo($numero)
 {
 
-echo $numero;
+if ($numero === false) {
+    $numero = 10;
+}
+
 
 
 ?>
