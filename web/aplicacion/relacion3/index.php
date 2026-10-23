@@ -84,6 +84,37 @@ function cuerpo()
     //lo que yo quiera
     echo "<br>" .llamadaAFuncion(1,3,fn($a,$b)=> $a ."+" .$b ." = " .$a+$b);
 
+
+    //Ejercicio 7 con array con un número para comprobar que me salta el error ya controlado
+    //en la libreria
+    $arrayEj7 = ["hola", "me", "llamo", "Cristian"];
+    echo "<br><br><strong>Ejercicio 7 funcion ordenar()</strong><br>";
+    echo "Array sin ordenar: <br>";
+    foreach ($arrayEj7 as $elem) {
+        echo $elem . " ";
+    }
+    if(ordenar($arrayEj7)){
+        echo "<br>Array ordenado correctamente.";
+    }else{
+        echo"<br>El array no son solo cadenas, no se ha podido ordenar";
+    }
+    echo "<br>Array ordenado: <br>";
+    foreach ($arrayEj7 as $elem) {
+        echo $elem . " ";
+    }
+
+    $arrayError = ["hola", "me", "llamo", 12];
+    echo "<br>Array sin ordenar: <br>";
+    foreach ($arrayError as $elem) {
+        echo $elem . " ";
+    }
+    if(ordenar($arrayError)){
+        echo "<br>Array ordenado correctamente.";
+    }else{
+        echo"<br>El array no son solo cadenas, no se ha podido ordenar";
+    }
+
+
 ?>
 <?php
 }

@@ -1,44 +1,64 @@
 @charset "UTF-8";
 
 body {
-    background-color: #eceff7;
+    background-color: #4f8fc9;
     font-size: 16px;
     font-family: Arial, Helvetica, sans-serif;
-    color: #1f2340;
+    color: #1c2b3a;
+}
+
+/* Enlaces sueltos: rosa fuerte sobre fondo claro */
+a {
+    color: #c2185b;
+}
+
+a:hover {
+    color: #7b1040;
+    text-decoration: underline;
 }
 
 #documento {
     margin: 0 auto;
-    background-color: #f7f8fd;
+    background-color: #fbfdff;
     width: 700px;
-    box-shadow: 0 2px 10px rgba(31, 35, 64, 0.25);
+    box-shadow: 0 2px 14px rgba(20, 40, 60, 0.5);
 }
 
-#cabecera {
-    background-color: #3949ab;
+/* Cabecera: logo a la izquierda y título a su lado */
+header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #00897b;
     color: white;
-    padding: 5px;
+    padding: 5px 10px;
 }
 
-#cabecera #logo {
-    width: 75px;
-    height: 50px;
+#logo {
+    flex-shrink: 0;
 }
 
-#cabecera #titulo {
+#logo img {
+    display: block;
+    height: 60px;
+    width: auto;
+}
+
+#titulo {
+    margin: 0;
     font-size: 1.3em;
     font-style: italic;
 }
 
 #barraUbicacion {
     background-color: transparent;
-    color: #1a237e;
+    color: #0d47a1;
 }
 
 .boton {
-    background-color: #3949ab;
+    background-color: #1976d2;
     color: white;
-    border: thin #1a237e solid;
+    border: thin #0d47a1 solid;
 }
 
 .boton a {
@@ -53,12 +73,12 @@ body {
 
 .boton a:hover {
     background-color: #ffb300;
-    color: #1f2340;
+    color: #1c2b3a;
 }
 
 .boton:hover {
     background-color: #ffb300;
-    color: #1f2340;
+    color: #1c2b3a;
 }
 
 .tabla {
@@ -69,30 +89,31 @@ body {
 }
 
 .tabla th {
-    background-color: #1a237e;
+    background-color: #1976d2;
     color: white;
 }
 
 .tabla tr.par {
-    background-color: #e8eaf6;
-    color: #1f2340;
+    background-color: #e3f2fd;
+    color: #1c2b3a;
 }
 
 .tabla tr.impar {
     background-color: white;
-    color: #1f2340;
+    color: #1c2b3a;
 }
 
 #pie {
-    background-color: #1a237e;
+    background-color: #ef6c00;
     color: white;
     font-size: 1.5em;
     padding: 5px;
 }
 
 .for_texto {
-    border: #3949ab thin solid;
+    border: #1976d2 thin solid;
     background-color: white;
+    color: #1c2b3a;
     padding: 2px;
     margin: 2px;
     border-radius: 4px;
@@ -100,23 +121,23 @@ body {
 
 .for_texto:focus {
     outline: none;
-    border-color: #ffb300;
-    box-shadow: 0 0 4px #ffb300;
+    border-color: #ff7043;
+    box-shadow: 0 0 4px #ff7043;
 }
 
 .error {
     background-color: white;
-    color: red;
-    border: thin solid red;
+    color: #c62828;
+    border: thin solid #c62828;
     padding: 5px;
 }
 
 /* Menú superior personalizado */
 #menuPrincipal {
-    background-color: #f5f5f5;
+    background-color: #bbdefb;
     padding: 15px 25px;
     border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(20, 40, 60, 0.25);
     margin-bottom: 20px;
 }
 
@@ -131,26 +152,42 @@ body {
 }
 
 #menuPrincipal li {
-    background-color: #ffffff;
-    border: 2px solid #ad7829;
+    background-color: #ffe082;
+    border: 2px solid #f57c00;
     border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(20, 40, 60, 0.25);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 #menuPrincipal li:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-color: #c4a797;
+    box-shadow: 0 4px 8px rgba(20, 40, 60, 0.35);
+    background-color: #e64a19;
 }
 
 #menuPrincipal li a {
     display: block;
     padding: 12px 20px;
     text-decoration: none;
-    color: #616161;
+    color: #3e2723;
     font-weight: bold;
     font-size: 1em;
     text-align: center;
     border-radius: 12px;
+}
+
+/* Al pasar el ratón, el fondo se vuelve rojo anaranjado y el texto blanco */
+#menuPrincipal li:hover a {
+    color: white;
+}
+
+/* Pie de página: en tu PHP es la etiqueta <footer>, no #pie */
+footer {
+    background-color: #ef6c00;
+    color: white;
+    padding: 5px 10px;
+}
+
+footer hr {
+    border-color: rgba(255, 255, 255, 0.6);
 }

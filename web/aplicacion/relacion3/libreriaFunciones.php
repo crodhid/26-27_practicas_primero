@@ -48,7 +48,7 @@ function generarCadena($defecto = 10): string|bool
 
     $cadena = "";
     $contador = 0;
-    $caracteres = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'];
+    $caracteres = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     while ($contador < $defecto) {
         $cadena .= $caracteres[mt_rand(0, (count($caracteres) - 1))];
         $contador++;
@@ -106,11 +106,11 @@ function operaciones(int $tipoOperacion, int $num1, int $num2, int ...$numeros):
             $resultado = $resultado * array_product($numeros);
             break;
         default:
-            
-            for($i = 0; $i < count($numeros); $i++){
-                if (($i+1) %2 == 0) {
-                    $resultadoPar+= $numeros[$i];
-                }else{
+
+            for ($i = 0; $i < count($numeros); $i++) {
+                if (($i + 1) % 2 == 0) {
+                    $resultadoPar += $numeros[$i];
+                } else {
                     $resultadoImpar += $numeros[$i];
                 }
             }
@@ -127,10 +127,11 @@ function operaciones(int $tipoOperacion, int $num1, int $num2, int ...$numeros):
  * num1 y num2 tienen un valor por defecto si no introducen nada.
  * Devuelve un resultado tipo int el cual es la multiplicación de los 3
  */
-function devuelve(int &$valor, int $num1 =10, int $num2 = 20):int{
+function devuelve(int &$valor, int $num1 = 10, int $num2 = 20): int
+{
     $resultado = $valor * $num1 * $num2;
     $valor += $num1 + $num2;
-        return $resultado;
+    return $resultado;
 }
 
 
@@ -138,13 +139,16 @@ function devuelve(int &$valor, int $num1 =10, int $num2 = 20):int{
  * Ejercicio 5
  * Hago 3 funciones suma resta y multiplicacion a la cual a cada una le llegan dos parámetros
  */
-function suma(int $num1, int $num2):int{
+function suma(int $num1, int $num2): int
+{
     return $num1 + $num2;
 }
-function resta(int $num1, int $num2):int{
+function resta(int $num1, int $num2): int
+{
     return $num1 - $num2;
 }
-function multiplicacion(int $num1, int $num2):int{
+function multiplicacion(int $num1, int $num2): int
+{
     return $num1 * $num2;
 }
 
@@ -157,7 +161,8 @@ function multiplicacion(int $num1, int $num2):int{
  * @param integer $num2
  * @return integer|boolean
  */
-function hacerOperacion(string $cadena, int $num1, int $num2 ):int|bool{
+function hacerOperacion(string $cadena, int $num1, int $num2): int|bool
+{
     //Guardo en una variable el nombre de la operación a realizar.
     $operacion = $cadena;
     $resultado = 0;
@@ -168,8 +173,7 @@ function hacerOperacion(string $cadena, int $num1, int $num2 ):int|bool{
 
     //Como he explicado antes, en php las funciones se pueden ejecutar guardando su nombre
     //previamente
-    return $operacion($num1,$num2);
-    
+    return $operacion($num1, $num2);
 }
 
 /**
@@ -178,6 +182,46 @@ function hacerOperacion(string $cadena, int $num1, int $num2 ):int|bool{
  * como parámetro, lo que estoy haciendo aquí es especificarle que dentro de num3 vamos a usar
  * num1 y num2, y en el parámetro especifico la suma, resta o lo que quiera hacer con ellos.
  */
-function llamadaAFuncion(int $num1, int $num2, callable $num3){
-        return $num3($num1,$num2);
+function llamadaAFuncion(int $num1, int $num2, callable $num3)
+{
+    return $num3($num1, $num2);
+}
+
+
+/**
+ * Ejercicio 7, al cual le llega un array y ordena de forma descendente
+ */
+
+/**
+ * Funcion en la cual le llega un array
+ * Para que funcione con cadenas y con todo tenemos que utilizar el operador nave espacial
+ * Pero como solo hay que ordenar por carácteres utilizo el mb_strlen
+ * @param array $array
+ * @return array
+ */
+function ordenar(array &$array): bool
+{
+    //el $b - $a solo funciona bien con números enteros, para que funcione con todo
+    //utilizamos el operador nave espacial <=> pero esto no es ordenar por número de carácteres
+    //esto ordena por orden alfábetico lo he leido mal
+    //usort($array, fn($a, $b) => $b - $a);
+    // usort($array, fn($a, $b) => $b <=> $a);
+
+    //Comprobamos que todos los componentes de mi array son cadenas
+    $boolean = true;
+    $contador = 0;
+    while ($contador < count($array) && $boolean == true) {
+        if (!is_string($array[$contador])) {
+            $boolean = false;
+        }
+        $contador ++;
+    }
+
+    //Si todos son cadenas el programa sigue si no devuelve falso
+    if (!$boolean) {
+        return false;
+    }
+    //Ordenamos por longitud de numeros de carácteres en mi cadena
+    usort($array, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
+    return true;
 }
