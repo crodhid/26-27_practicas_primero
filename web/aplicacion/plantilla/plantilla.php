@@ -63,6 +63,7 @@ function inicioCuerpo(string $cabecera, ?array $ubicacion = null)
         <div id="documento">
 
             <header>
+                <span id="logo"> <a href="/"><img src="../../imagenes/logo.png" alt=""></a></span>
                 <h1 id="titulo"><?php echo $cabecera; ?></h1>
             </header>
 
@@ -75,6 +76,7 @@ function inicioCuerpo(string $cabecera, ?array $ubicacion = null)
                     <li><a href="/aplicacion/pruebas/index.php">Ejemplos básicos</a></li>
                     <li><a href="/aplicacion/relacion1/index.php">Relación 1</a></li>
                     <li><a href="/aplicacion/relacion2/index.php">Relación 2</a></li>
+                    <li><a href="/aplicacion/relacion3/index.php">Relación 3</a></li>
                 </ul>
 
             </div>

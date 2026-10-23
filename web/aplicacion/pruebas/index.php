@@ -34,5 +34,7 @@ function cuerpo()
     <a href="basicas.php">Funcionamiento básico</a> 
     <br>
     <a href="cadenas.php">Prueba cadenas</a>
+    <br>
+    <a href="funciones.php">Funciones</a>
 <?php
 }

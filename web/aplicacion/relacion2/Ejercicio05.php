@@ -20,6 +20,8 @@ TEXTO;
 
 // Expresiones regulares
 $reTag    = '/<\/?[a-z][a-z0-9]*[^>]*>/i';          // <h1>, </p>, <a href="#">
+//esto hace que el número no tengo nada ni antes ni detrás
+//el \b es q haya un espacio en blanco antes, \d+ d= decimal  += mas numeros \b separado de nuevo
 $reNumero = '/\b\d+\b/';                              // uno o varios dígitos
 $reEmail  = '/[a-z0-9._-]+@[a-z0-9-]+\.[a-z]{2,}/i';  // aaaa@aaaa.aa
 
