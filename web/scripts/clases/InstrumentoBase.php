@@ -1,38 +1,38 @@
 <?php
 /**
- * Clase abstracta para implementar después herencia
+ * Clase abstracta base para todos los instrumentos
  */
 abstract class InstrumentoBase
 {
-    //Definimos mis variables 
-    private ?string $_descripcion;
-    //variable que no se puede acceder desde el exterior pero desde sus clases descendientes si
-    protected int $_edad;
+    // Descripción del instrumento (no accesible directamente)
+    private string $_descripcion;
 
-    //Variable protegida de clase (static) en la cual dice cuantos instrumentos se han creado
+    // Edad: no accesible desde fuera, sí desde las clases descendientes
+    protected int $_edad = 10;
+
+    // Variable de clase protegida: cuántos instrumentos se han creado
     protected static int $_contador = 0;
 
-    //Variable orden es decir, en que posición se ha creado ese objeto
-    private int $_orden = 0;
+    // Orden de creación de esta instancia
+    protected int $_orden = 0;
 
     /**
-     * Constructor al cual le llegan los dos parámetros, si no le llega edad, coge 10 por defecto
+     * Constructor. Si no llega edad, se usa 10 por defecto
      *
-     * @param string $_descripcion
+     * @param string $descripcion
      * @param integer $edad
      */
-    public function __construct(string $_descripcion, int $edad = 10)
+    public function __construct(string $descripcion, int $edad = 10)
     {
-        $this->_descripcion = $_descripcion;
+        $this->_descripcion = $descripcion;
         $this->_edad = $edad;
-        //Se le suma uno a mi contador de clase para saber cuantos instrumentos se han creado
+        // Primero incremento el contador de clase y después se lo asigno a la instancia
         self::$_contador++;
-        //Le sumo uno al orden, asi se le asigna el orden a mi instrumento
-        $this->_orden++;
+        $this->_orden = self::$_contador;
     }
 
     /**
-     * Función para obtener mi cadena
+     * Devuelve la descripción
      */
     public function getCadena(): string
     {
@@ -40,48 +40,68 @@ abstract class InstrumentoBase
     }
 
     /**
-     * Función para establecer mi cadena con el parámetro que me llega
-     *
-     * @param string $cadena
-     * @return void
+     * Establece la descripción
      */
-    public function setCadena(string $cadena): bool
+    public function setCadena(string $cadena): void
     {
-        return $this->_descripcion = $cadena;
+        $this->_descripcion = $cadena;
     }
 
     /**
-     * Método abstracto sonido
-     *
-     * @return void
+     * Devuelve la edad
      */
-    abstract function sonido();
-
-
-    /**
-     * Método abstracto afinar
-     *
-     * @return void
-     */
-    abstract function afinar();
-
-    /**
-     * Función la cual implementa la edad de mi instrumento en 1
-     *
-     * @return boolean
-     */
-    public function envejecer(): bool
+    public function getEdad(): int
     {
-        return $this->_edad++;
+        return $this->_edad;
     }
 
     /**
-     * Método toString en el cual redifinimos la cadena con la que queremos que se muestre;
-     *
-     * @return string
+     * Devuelve una frase que representa el sonido
      */
-    public function __toString():string {
-        return "Instrumento con descripción: " . $this->_descripcion . " Instancia: " . 
-        $this -> _orden . " de un total de: " . self::$_contador . " Tiene " . $this->_edad . " años";
+    abstract public function sonido(): string;
+
+    /**
+     * Devuelve los pasos necesarios para afinar el instrumento
+     */
+    abstract public function afinar(): string;
+
+    /**
+     * Aumenta la edad del instrumento en un año
+     */
+    public function envejecer(): void
+    {
+        $this->_edad++;
+    }
+
+    /**
+     * Texto con el que se muestra el objeto en un echo
+     */
+    public function __toString(): string
+    {
+        return "instrumento con descripción " . $this->_descripcion
+            . ", instancia " . $this->_orden
+            . " de un total de " . self::$_contador
+            . ". Tiene " . $this->_edad . " años. La clase es " . get_class($this);
+    }
+
+    // Sobrecarga dinámica deshabilitada
+    public function __get(string $nombre): never
+    {
+        throw new Exception("No se puede acceder a la propiedad $nombre");
+    }
+
+    public function __set(string $nombre, mixed $valor): never
+    {
+        throw new Exception("No se puede asignar la propiedad $nombre");
+    }
+
+    public function __isset(string $nombre): bool
+    {
+        return false;
+    }
+
+    public function __unset(string $nombre): never
+    {
+        throw new Exception("No se puede eliminar la propiedad $nombre");
     }
 }
