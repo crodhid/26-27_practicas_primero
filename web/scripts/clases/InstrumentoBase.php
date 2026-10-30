@@ -1,9 +1,12 @@
 <?php
+
 /**
  * Clase abstracta base para todos los instrumentos
  */
 abstract class InstrumentoBase
 {
+
+
     // Descripción del instrumento (no accesible directamente)
     private string $_descripcion;
 
@@ -18,9 +21,6 @@ abstract class InstrumentoBase
 
     /**
      * Constructor. Si no llega edad, se usa 10 por defecto
-     *
-     * @param string $descripcion
-     * @param integer $edad
      */
     public function __construct(string $descripcion, int $edad = 10)
     {
@@ -31,25 +31,16 @@ abstract class InstrumentoBase
         $this->_orden = self::$_contador;
     }
 
-    /**
-     * Devuelve la descripción
-     */
-    public function getCadena(): string
+    public function getDescripcion(): string
     {
         return $this->_descripcion;
     }
 
-    /**
-     * Establece la descripción
-     */
-    public function setCadena(string $cadena): void
+    public function setDescripcion(string $descripcion): void
     {
-        $this->_descripcion = $cadena;
+        $this->_descripcion = $descripcion;
     }
 
-    /**
-     * Devuelve la edad
-     */
     public function getEdad(): int
     {
         return $this->_edad;
@@ -73,9 +64,6 @@ abstract class InstrumentoBase
         $this->_edad++;
     }
 
-    /**
-     * Texto con el que se muestra el objeto en un echo
-     */
     public function __toString(): string
     {
         return "instrumento con descripción " . $this->_descripcion
@@ -84,15 +72,15 @@ abstract class InstrumentoBase
             . ". Tiene " . $this->_edad . " años. La clase es " . get_class($this);
     }
 
-    // Sobrecarga dinámica deshabilitada
-    public function __get(string $nombre): never
+
+    public function __get(string $nombre): mixed
     {
-        throw new Exception("No se puede acceder a la propiedad $nombre");
+        throw new LogicException("No se puede acceder a la propiedad $nombre");
     }
 
-    public function __set(string $nombre, mixed $valor): never
+    public function __set(string $nombre, mixed $valor): void
     {
-        throw new Exception("No se puede asignar la propiedad $nombre");
+        throw new LogicException("No se puede asignar la propiedad $nombre");
     }
 
     public function __isset(string $nombre): bool
@@ -100,8 +88,8 @@ abstract class InstrumentoBase
         return false;
     }
 
-    public function __unset(string $nombre): never
+    public function __unset(string $nombre): void
     {
-        throw new Exception("No se puede eliminar la propiedad $nombre");
+        throw new LogicException("No se puede eliminar la propiedad $nombre");
     }
 }

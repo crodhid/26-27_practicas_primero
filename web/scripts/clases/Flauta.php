@@ -1,32 +1,49 @@
 <?php
 
-class Flauta extends InstrumentoViento implements IFabricable
+/**
+ * Clase final: no se puede heredar de ella
+ */
+final class Flauta extends InstrumentoViento implements IFabricable
 {
-
-    #[Override]
-    private function __construct(string $material, int $edad = 15)
+    private function __construct(string $material = "madera", int $edad = 15)
     {
-        return parent::__construct($material, $edad);
+        parent::__construct($material, $edad);
     }
 
-    //Constructor estático en el que puede o no aparecer posiciones del array
+    /**
+     * Constructor estático. "material" y "edad" pueden no aparecer en el array
+     */
     public static function crearDesdeArray(array $datos): Flauta
     {
-        //esto esta haciendo que si no tiene ese valor de material dentro del array se le introduce madera
-        $material = $datos["material"] ??  "Madera";
-
-        //Lo mismo pasa aquí en edad
+        $material = $datos["material"] ?? "madera";
         $edad = $datos["edad"] ?? 15;
-        //Creo un objeto de flauta con esos datos y los devuelvo
-        $instancia = new Flauta($material, $edad);
-        return $instancia;
+
+        if (!is_string($material) || !is_int($edad)) {
+            throw new InvalidArgumentException("El material debe ser texto y la edad un entero");
+        }
+
+        return new self($material, $edad);
     }
 
-    //Función para clonar mi objeto flauta
+    /**
+     * Al clonar: mismos valores, pero edad 0 y nuevo número de instancia
+     */
     public function __clone()
     {
         $this->_edad = 0;
         self::$_contador++;
         $this->_orden = self::$_contador;
+    }
+
+    #[Override]
+    public function metodoFabricacion(): string
+    {
+        return "Se corta y se vacía el material, se perforan los orificios de las notas y se pule";
+    }
+
+    #[Override]
+    public function metodoReciclado(): string
+    {
+        return "Si es de madera se tritura para aglomerado; si es de metal se funde";
     }
 }

@@ -2,41 +2,36 @@
 
 class InstrumentoViento extends InstrumentoBase
 {
-    protected string $_material;
+    protected string $_material = "madera";
 
     /**
-     * Consctructor que hereda de la clase padre, mi descripción es "instrumento de viento"
-     * entonces no le llega como parámetro, y la edad pasa a ser por defecto 15
-     *
-     * @param integer $edad
+     * La descripción es fija ("instrumento de viento"), por eso no llega como parámetro.
+     * La edad por defecto es 15.
      */
-    #[Override]
-    function __construct(string $material, int $edad = 15)
+    public function __construct(string $material = "madera", int $edad = 15)
     {
         $this->_material = $material;
-        parent::__construct("Instrumento de viento", $edad);
+        parent::__construct("instrumento de viento", $edad);
     }
 
     /**
-     * Método final en el cual no se puede redefinir mas
-     *
-     * @return string
+     * Final: las clases derivadas no pueden redefinirlo
      */
-    public final function afinar(): string
+    #[Override]
+    final public function afinar(): string
     {
         return "Ajustar aire";
     }
 
     #[Override]
-    public function sonido(): string {
+    public function sonido(): string
+    {
         return "Es de aire";
     }
 
     #[Override]
     public function __toString(): string
     {
-        return parent::__toString() . " Instrumento de material" . $this->_material;
+        return parent::__toString() . ". Instrumento de material " . $this->_material;
     }
-
-
 }

@@ -8,8 +8,8 @@ enum EstadoCivil : int{
     /**
      * Función que me devuelve el valor string de mis cases del enum
      */
-    function descripción():string{
-        return $this->nombre;
+    function descripcion():string{
+        return $this->name;
     }
 
     /**
@@ -18,7 +18,7 @@ enum EstadoCivil : int{
      * @return integer
      */
     function valor():int{
-        return $this->valor; 
+        return $this->value; 
     }
 
     /**
