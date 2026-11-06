@@ -60,29 +60,31 @@ function validaFecha(string &$fecha, string $defecto): bool
 {
     $partes = explode("/", trim($fecha));
     if (count($partes) != 3) {
-        $fecha = DateTime::createFromFormat('d/m/Y', $defecto);
+        $fecha = $defecto;
         return false;
     }
 
-    $dia  = $partes[0];
-    $mes  = $partes[1];
+    $dia = $partes[0];
+    $mes = $partes[1];
     $año = $partes[2];
 
     // Comprobar que son números y que el año tiene 4 cifras
     if (!ctype_digit($dia) || !ctype_digit($mes) || !ctype_digit($año) || strlen($año) != 4) {
-        $fecha = DateTime::createFromFormat('d/m/Y', $defecto);
+        $fecha = $defecto;
         return false;
     }
 
     // Comprobar que la fecha existe (31/02 no vale)
     if (!checkdate((int)$mes, (int)$dia, (int)$año)) {
-        $fecha = DateTime::createFromFormat('d/m/Y', $defecto);
+        $fecha = $defecto;
         return false;
     }
 
-    $fecha = DateTime::createFromFormat('d/m/Y', sprintf("%02d/%02d/%04d", $dia, $mes, $año));
+    // Devuelvo el string saneado: 2 cifras para día y mes, 4 para el año
+    $fecha = sprintf("%02d/%02d/%04d", $dia, $mes, $año);
     return true;
 }
+
 
 /**
  * Funcion que valida la hora, esta lo splitea en un array,
@@ -95,21 +97,28 @@ function validaFecha(string &$fecha, string $defecto): bool
  */
 function validaHora(string &$hora, string $defecto): bool
 {
-    $arrayHora = explode(":", $hora);
+    $arrayHora = explode(":", trim($hora));
     if (count($arrayHora) != 3) {
-        $hora = DateTime::createFromFormat('H:i:s', $defecto);
+        $hora = $defecto;
         return false;
     }
 
-    //Comprobamos si los valores estan dentro de los válidos, si no lo estan no sirven.
-    if (($arrayHora[0] >= 24) || ($arrayHora[1] >= 60) || ($arrayHora[0] < 0) || ($arrayHora[1] < 0) ||
-        ($arrayHora[2] < 0) || ($arrayHora[2] >= 60)
-    ) {
-        $hora = DateTime::createFromFormat('H:i:s', $defecto);
+    // Cada parte tiene que ser un número de 1 o 2 cifras
+    foreach ($arrayHora as $parte) {
+        if (!ctype_digit($parte) || strlen($parte) > 2) {
+            $hora = $defecto;
+            return false;
+        }
+    }
+
+    // Comprobamos que los valores están dentro de los límites
+    if ($arrayHora[0] >= 24 || $arrayHora[1] >= 60 || $arrayHora[2] >= 60) {
+        $hora = $defecto;
         return false;
     }
-    //creamos la hora con nuestro casteo de formato correcto
-    $hora = DateTime::createFromFormat("H:i:s", sprintf("%02d:%02d:%02d", (int)$arrayHora[0], (int)$arrayHora[1], (int)$arrayHora[2]));
+
+    // Devuelvo el string saneado: 2 cifras para hora, minutos y segundos
+    $hora = sprintf("%02d:%02d:%02d", $arrayHora[0], $arrayHora[1], $arrayHora[2]);
     return true;
 }
 
@@ -142,7 +151,7 @@ function validaEmail(string &$email, string $defecto):bool{
  * @param string $defecto
  * @return bool
  */
-function validaCadena(string &$cadena, string $longitud, string $defecto ):bool{
+function validaCadena(string &$cadena, int $longitud, string $defecto ):bool{
     if (mb_strlen($cadena) > $longitud) {
         $cadena = $defecto;
         return false;
