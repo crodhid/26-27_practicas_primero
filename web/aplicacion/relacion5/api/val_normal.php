@@ -27,16 +27,16 @@ function validaEntero(int &$var, int $min, int $max, int $default): bool
 
 
 /**
- * Función que comprueba si el número está entre el mínimo y el máximo, si no lo está se le asigna el
+ * Función que comprueba si el número real está entre el mínimo y el máximo, si no lo está se le asigna el
  * valor por defecto
  *
- * @param integer $var
- * @param integer $min
- * @param integer $max
- * @param integer $default
+ * @param float $var
+ * @param float $min
+ * @param float $max
+ * @param float $default
  * @return boolean
  */
-function validaReal(int &$var, int $min, int $max, int $default): bool
+function validaReal(float &$var, float $min, float $max, float $default): bool
 {
     if (($var >= $min) && ($var <= $max)) {
         return true;

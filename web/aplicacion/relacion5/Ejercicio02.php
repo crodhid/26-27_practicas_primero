@@ -181,7 +181,7 @@ if (isset($_POST["enviar"])) {
 
     //Aqui se le pone sin las llaves del array, porque lo que se le pone en html es para que php
     //sepa que cuando le da a enviar el formulario tiene que crearlo, pero aquí la clave que 
-    //nos llega es un array ya. Los códigos llegan como string, los paso a entero
+    //nos llega es un array ya. Los códigos llegan como string y los dejo como string
     if (isset($_POST["estudios"]) && is_array($_POST["estudios"])) {
         $valores["estudios"] = $_POST["estudios"];
     }
@@ -190,15 +190,65 @@ if (isset($_POST["enviar"])) {
         $errores["estudios"] = "No puede estar ninguna sin marcar";
     }
 
+    //Me quedo solo con los códigos válidos (el 6 no lo es) y aviso si había alguno incorrecto
+    $correctos = array_values(array_filter(
+        $valores["estudios"],
+        fn($codigo) => validaRango($codigo, ["0", "1", "2", "3", "4", "5"])
+    ));
+    if (count($correctos) !== count($valores["estudios"])) {
+        $errores["estudios"] = "Has marcado una opción incorrecta";
+        $valores["estudios"] = $correctos;
+    }
 
     //aqui compruebo que si tengo mas de dos o dos valores marcados y esta marcado sin estudios
     //no puede seleccionarlo (se queda solo el 0, como array)
-    if (count($valores["estudios"]) >= 2 && (in_array(0, $valores["estudios"], true))) {
-        $valores["estudios"] = [0];
+    if (count($valores["estudios"]) >= 2 && in_array("0", $valores["estudios"], true)) {
+        $valores["estudios"] = ["0"];
+    }
+
+    /**
+     * Hermanos
+     */
+    //Comprobamos que no es nulo
+    if (isset($_POST["hermanos"])) {
+        $valores["hermanos"] = mb_trim($_POST["hermanos"]);
+    }
+
+    //Comprobamos que son solo cifras (con (string) por si el valor por defecto es un entero)
+    if (!ctype_digit((string) $valores["hermanos"])) {
+        $errores["hermanos"] = "Debes introducir un número entero";
+    }
+
+    //Convierto el string a numero entero
+    $valores["hermanos"] = (int) $valores["hermanos"];
+
+    //Comprobamos que el número está dentro de nuestro rango
+    if (!validaEntero($valores["hermanos"], 0, 20, 0)) {
+        $errores["hermanos"] = "Se ha pasado del rango, es entre 0 y 20";
+    }
+
+    /**
+     * Sueldo
+     */
+    if (isset($_POST["sueldo"])) {
+        $valores["sueldo"] = mb_trim($_POST["sueldo"]);
+    }
+
+    if (!is_numeric((string) $valores["sueldo"])) {
+        $errores["sueldo"] = "No es un valor numérico";
+        //Lo dejo en el valor por defecto, para que no se convierta en 0 y salte también el error de rango
+        $valores["sueldo"] = 1100;
+    }
+
+    $valores["sueldo"] = (float) $valores["sueldo"];
+
+    if (!validaReal($valores["sueldo"], 1000, 150000, 1100)) {
+        $errores["sueldo"] = "El sueldo debe estar entre 1000 y 150000";
     }
 }
 
-
+//Solo muestro el resumen si se ha enviado el formulario y no hay ningún error
+$mostrarResumen = isset($_POST["enviar"]) && empty($errores);
 
 //dibuja la plantilla de la vista
 inicioCabecera("APLICACION PRIMER TRIMESTRE");
@@ -207,7 +257,7 @@ inicioCabecera("APLICACION PRIMER TRIMESTRE");
 cabecera();
 finCabecera();
 inicioCuerpo("2DAW APLICACION", $ubicacion);
-cuerpo($valores, $errores); //llamo a la vista
+cuerpo($valores, $errores, $mostrarResumen); //llamo a la vista
 finCuerpo();
 // **********************************************************
 ////vista cabecera donde podemos ver otros enlaces 
@@ -215,11 +265,16 @@ finCuerpo();
 function cabecera() {}
 
 //vista
-function cuerpo($valores, $errores)
+function cuerpo(array $valores, array $errores, bool $mostrarResumen)
 {
+    //Si todo es correcto no se muestra el formulario, solo el resumen
+    if ($mostrarResumen) {
+        echo resumen($valores);
+        return;
+    }
+
     //LOS ECHO SE PONEN EN TODA LA PRÁCTICA PARA QUE SI LE DA ERROR AL MADNA EL FORMULARIO,
     // QUE EL FORMULARIO SE QUEDE RELLENO
-    // formulario($valores, $errores);
 
     if ($errores) {
         echo "<div class = 'error'>";
@@ -229,6 +284,20 @@ function cuerpo($valores, $errores)
         echo "</div>";
     }
 
+    //llamo a la función que dibuja el formulario
+    echo formulario($valores, $errores);
+}
+
+/**
+ * Función que dibuja el formulario. Está separada de la vista, que es la que la llama.
+ *
+ * @param array $valores valores a mostrar en cada campo
+ * @param array $errores errores de validación
+ * @return string HTML del formulario
+ */
+function formulario(array $valores, array $errores): string
+{
+    ob_start();
 ?>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
 
@@ -296,31 +365,31 @@ function cuerpo($valores, $errores)
         <fieldset>
             <legend>Estudios</legend>
             <label><input type="checkbox" name="estudios[]" value="0"
-                    <?php if (in_array(0, $valores["estudios"], true)) {
+                    <?php if (in_array("0", $valores["estudios"], true)) {
                         echo "checked";
                     } ?>> 0 - Sin estudios</label>
             <label><input type="checkbox" name="estudios[]" value="1"
-                    <?php if (in_array(1, $valores["estudios"], true)) {
+                    <?php if (in_array("1", $valores["estudios"], true)) {
                         echo "checked";
                     } ?>> 1 - Primaria</label>
             <label><input type="checkbox" name="estudios[]" value="2"
-                    <?php if (in_array(2, $valores["estudios"], true)) {
+                    <?php if (in_array("2", $valores["estudios"], true)) {
                         echo "checked";
                     } ?>> 2 - Secundaria</label>
             <label><input type="checkbox" name="estudios[]" value="3"
-                    <?php if (in_array(3, $valores["estudios"], true)) {
+                    <?php if (in_array("3", $valores["estudios"], true)) {
                         echo "checked";
                     } ?>> 3 - Bachillerato</label>
             <label><input type="checkbox" name="estudios[]" value="4"
-                    <?php if (in_array(4, $valores["estudios"], true)) {
+                    <?php if (in_array("4", $valores["estudios"], true)) {
                         echo "checked";
                     } ?>> 4 - Ciclo formativo</label>
             <label><input type="checkbox" name="estudios[]" value="5"
-                    <?php if (in_array(5, $valores["estudios"], true)) {
+                    <?php if (in_array("5", $valores["estudios"], true)) {
                         echo "checked";
                     } ?>> 5 - Universitarios</label>
             <label><input type="checkbox" name="estudios[]" value="6"
-                    <?php if (in_array(6, $valores["estudios"], true)) {
+                    <?php if (in_array("6", $valores["estudios"], true)) {
                         echo "checked";
                     } ?>> 6 - Incorrecta</label>
         </fieldset>
@@ -342,4 +411,60 @@ function cuerpo($valores, $errores)
         <p><input type="submit" name="enviar" value="Enviar"></p>
     </form>
 <?php
+    return ob_get_clean();
+}
+
+/**
+ * Función que dibuja el resumen con los datos introducidos.
+ * Muestra el texto de estado y estudios en lugar de su código.
+ *
+ * @param array $valores datos ya validados
+ * @return string HTML del resumen
+ */
+function resumen(array $valores): string
+{
+    //Textos que corresponden a cada código
+    $estados = [
+        1 => "Estudiante",
+        2 => "En paro",
+        3 => "Trabajando",
+        4 => "Jubilado"
+    ];
+    $estudios = [
+        "0" => "Sin estudios",
+        "1" => "Primaria",
+        "2" => "Secundaria",
+        "3" => "Bachillerato",
+        "4" => "Ciclo formativo",
+        "5" => "Universitarios"
+    ];
+
+    //Convierto los códigos de estudios marcados en sus textos
+    $textosEstudios = [];
+    foreach ($valores["estudios"] as $codigo) {
+        $textosEstudios[] = $estudios[$codigo];
+    }
+
+    //Compongo la fecha de carnet con sus tres partes
+    $fechaCarnet = $valores["fecha_carnet"]["dia"] . "/"
+        . $valores["fecha_carnet"]["mes"] . "/"
+        . $valores["fecha_carnet"]["año"];
+
+
+    //Esto empieza mi objeto para devolverlo despues con el ob_Get_clean
+    ob_start();
+?>
+    <h2>Datos introducidos</h2>
+    <ul>
+        <li>Nombre: <?php echo htmlspecialchars($valores["nombre"]); ?></li>
+        <li>Fecha de nacimiento: <?php echo htmlspecialchars($valores["fecha_nacimiento"]); ?></li>
+        <li>Fecha de carnet: <?php echo htmlspecialchars($fechaCarnet); ?></li>
+        <li>Hora de levantarse: <?php echo htmlspecialchars($valores["hora_levantarse"]); ?></li>
+        <li>Estado: <?php echo htmlspecialchars($estados[$valores["estado"]]); ?></li>
+        <li>Estudios: <?php echo htmlspecialchars(implode(", ", $textosEstudios)); ?></li>
+        <li>Hermanos: <?php echo htmlspecialchars((string) $valores["hermanos"]); ?></li>
+        <li>Sueldo: <?php echo htmlspecialchars(number_format($valores["sueldo"], 2, ",", ".")); ?> €</li>
+    </ul>
+<?php
+    return ob_get_clean();
 }

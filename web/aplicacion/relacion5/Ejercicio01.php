@@ -67,37 +67,38 @@ function cuerpo()
         echo "<br>Erróneo (100.5): $v | devuelve " . ($r ? 'true' : 'false');
 
         // ---------------- FECHA (defecto 01/01/2000) ----------------
-        // La variable queda como DateTime, por eso se usa format()
+        // La variable queda como string con formato dd/mm/aaaa
         echo "<br><br><strong>validaFecha (defecto 01/01/2000)</strong>";
         $f = "\\$lib\\validaFecha";
 
         $v = "25/12/2024";
         $r = $f($v, "01/01/2000");
-        echo "<br>Correcta (25/12/2024): " . $v->format('d/m/Y') . " | devuelve " . ($r ? 'true' : 'false');
+        echo "<br>Correcta (25/12/2024): $v | devuelve " . ($r ? 'true' : 'false');
 
         $v = "31/02/2024";
         $r = $f($v, "01/01/2000");
-        echo "<br>Inexistente (31/02/2024): " . $v->format('d/m/Y') . " | devuelve " . ($r ? 'true' : 'false');
+        echo "<br>Inexistente (31/02/2024): $v | devuelve " . ($r ? 'true' : 'false');
 
         $v = "2024-12-25";
         $r = $f($v, "01/01/2000");
-        echo "<br>Formato malo (2024-12-25): " . $v->format('d/m/Y') . " | devuelve " . ($r ? 'true' : 'false');
+        echo "<br>Formato malo (2024-12-25): $v | devuelve " . ($r ? 'true' : 'false');
 
         // ---------------- HORA (defecto 00:00:00) ----------------
+        // La variable queda como string con formato hh:mm:ss
         echo "<br><br><strong>validaHora (defecto 00:00:00)</strong>";
         $f = "\\$lib\\validaHora";
 
         $v = "12:30:45";
         $r = $f($v, "00:00:00");
-        echo "<br>Correcta (12:30:45): " . $v->format('H:i:s') . " | devuelve " . ($r ? 'true' : 'false');
+        echo "<br>Correcta (12:30:45): $v | devuelve " . ($r ? 'true' : 'false');
 
         $v = "25:61:00";
         $r = $f($v, "00:00:00");
-        echo "<br>Fuera de rango (25:61:00): " . $v->format('H:i:s') . " | devuelve " . ($r ? 'true' : 'false');
+        echo "<br>Fuera de rango (25:61:00): $v | devuelve " . ($r ? 'true' : 'false');
 
         $v = "12-30";
         $r = $f($v, "00:00:00");
-        echo "<br>Formato malo (12-30): " . $v->format('H:i:s') . " | devuelve " . ($r ? 'true' : 'false');
+        echo "<br>Formato malo (12-30): $v | devuelve " . ($r ? 'true' : 'false');
 
         // ---------------- EMAIL (defecto sin@email.com) ----------------
         echo "<br><br><strong>validaEmail (defecto sin@email.com)</strong>";
