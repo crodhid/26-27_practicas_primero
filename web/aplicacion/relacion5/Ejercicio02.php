@@ -8,7 +8,7 @@ include_once(dirname(__FILE__) . "/../../cabecera.php");
 $ubicacion = [
     "pagina principal" => "../../index.php",
     "relacion 5" => "./index.php",
-    "Ejercicio 1" => "Ejercicio1.php"
+    "Ejercicio 2" => "Ejercicio2.php"
 ];
 
 //Mi array de valores del formulario
