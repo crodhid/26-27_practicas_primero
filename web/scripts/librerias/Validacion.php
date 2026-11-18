@@ -12,7 +12,7 @@ use DateTime;
  * @param integer $default
  * @return boolean
  */
-function validaEntero(int &$var, int $min, int $max, int $default): bool
+function validaEntero(int $var, int $min, int $max, int $default): bool
 {
     $resultado = filter_var($var, FILTER_VALIDATE_INT, [
         'options' => [
