@@ -1,6 +1,7 @@
 <?php
 include_once(dirname(__FILE__) . "/../../cabecera.php");
 require_once(__DIR__ . '/../../scripts/clases/Punto.php');
+include_once(dirname(__FILE__). "/../../scripts/librerias/FuncionesImagenesFicheros.php");
 
 
 /**
@@ -43,10 +44,8 @@ $rutaImagen = $carpetaImagenes . $nombreImagen;
 $rutaPuntos = $carpetaImagenes . nombreFicheroPuntos();
 
 //Array donde voy a ir guardando mis puntos creados
-// CAMBIO: lo primero que se hace al acceder es cargar los puntos del fichero
 $puntosCreados = cargarPuntos($rutaPuntos);
 
-// NUEVO: cuando se conecta el usuario por primera vez se crea la imagen
 // con los puntos cargados (si no hay fichero, solo fondo y marco)
 if (!file_exists($rutaImagen)) {
     dibujaImagen($rutaImagen, $puntosCreados);
@@ -92,6 +91,47 @@ if (isset($_POST["guardar"])) {
 }
 }
 
+if (isset($_POST["eliminar"])) {
+    //El boton nos llega por el nombre del select que es la key
+    $indice = $_POST["puntosEliminar"] ?? "";
+
+    if (array_key_exists($indice, $puntosCreados)) {
+        unset($puntosCreados[$indice]);
+        //lo volvemos a ordenar por las claves para que la key vacía no moleste
+        $puntosCreados = array_values($puntosCreados);
+        guardarPuntos($rutaPuntos, $puntosCreados);
+        dibujaImagen($rutaImagen, $puntosCreados);
+    }
+}
+
+/**
+ * Si le está dando al boton de subir el fichero
+ */
+if (isset($_POST["subir"])) {
+    //los ficheros se guardan en la variable superglobal files
+    if (isset($_FILES["fichero"]) && $_FILES["fichero"]["error"] === UPLOAD_ERR_OK) {
+        //sacamos la extensión
+        $extension = mb_strtolower(pathinfo($_FILES["fichero"]["name"], PATHINFO_EXTENSION));
+
+        //Comprobamos que el fichero que nos ha llegado es de tipo txt
+        if ($extension === "txt") {
+            //cargarPuntos ya descarta las líneas incorrectas, solo nos devuelve los puntos válidos
+            //PHP deja el fichero de forma temporal en tmp_name, esa es la ruta 
+            $nuevos = cargarPuntos($_FILES["fichero"]["tmp_name"]);
+            //unimos un array con otro para poder dibujar la nueva imagen
+            $puntosCreados = array_merge($puntosCreados, $nuevos);
+            guardarPuntos($rutaPuntos, $puntosCreados);   // actualiza el .dat
+            dibujaImagen($rutaImagen, $puntosCreados);    // actualiza la imagen
+            $mensaje = "Se han añadido " . count($nuevos) . " puntos";
+        } else {
+            $mensaje = "El fichero tiene que ser de tipo txt";
+        }
+
+    } else {
+        $mensaje = "No se ha podido subir el fichero";
+    }
+}
+
 // url de la imagen con el nombre de la imagen
 $urlImagen = "../../imagenes/puntos/" . $nombreImagen;
 
@@ -127,11 +167,18 @@ function cuerpo($arrayColores, $arrayGrosores, $datos, $errores, $mensaje, $punt
             . " | grosor: " . $arrayGrosores[$p->getGrosor()]
             . "\n";
     }
+    echo formularioPuntos($puntosCreados);
 ?>
     <br>
     <textarea rows="10" cols="60" readonly><?php echo $lineas; ?></textarea>
     <br><br>
+    <?php
+    echo formularioCargaFichero()
+    ?>
+    <br><br>
     <img src="<?php echo $urlImagen; ?>" alt="Puntos" width="500" height="500">
+    <br>
+    <a href="imagen.php">Descargar Imagen</a>
 <?php
 }
 
@@ -189,142 +236,48 @@ function formulario($arrayColores, $arrayGrosores, $datos, $errores): string
 }
 
 
+
+
+function formularioPuntos(array $arrayPuntos): string
+{
+    ob_start();
+
+?>
+    <form method="post" action="<?php echo ($_SERVER['PHP_SELF']); ?>" novalidate>
+        <div>
+            <label>Borrar Punto:
+                <select name="puntosEliminar">
+                    <?php foreach ($arrayPuntos as $key => $value) { ?>
+                        <option value="<?php echo $key; ?>">
+                            <?php echo $value->getX() . ";" . $value->getY() . ";" . $value->getColor() . ";" . $value->getGrosor(); ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </label>
+        </div>
+        <button type="submit" name="eliminar">Borrar</button>
+    </form>
+
+
+<?php
+    return ob_get_clean();
+}
+
+
 /**
- * El nombre del fichgero tiene la misma ip y navegador que la imagen, entonces cambiamos las dos partes 
- * solo en vez de imagen es puntos_ y en vez de .jpg es .dat
- * lo estamos cambiando en nombreImagen() 
+ * Formulario para cargar el fichero
  *
  * @return string
  */
-function nombreFicheroPuntos(): string
-{
-    return str_replace(["imagen_", ".jpg"], ["puntos_", ".dat"], nombreImagen());
-}
-
-/**
- * Cargamos los puntos que nos vienen de nuestro fichero y devolvemos el array con los puntos cargados
- * si no se puede devolvemos un array vacio
- *
- * @param string $ruta
- * @return array
- */
-function cargarPuntos(string $ruta): array
-{
-    $puntos = [];
-
-    //comprueba que la ruta existe, si no existe devuelve un array vacio
-    if (!file_exists($ruta)) {
-        return $puntos;
-    }
-
-    //El file_ignore_new_lines hace que ignore el salto de linea del final
-    //file_skip_empty_lines ignora las lineas vacias
-    $lineas = file($ruta, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    //si no puede leerse devuelve false y vuelvo a devolver mi array vacío
-    if ($lineas === false) {
-        return $puntos;
-    }
-
-    //recorremos nuestro array de lineas, metiendo cada linea en un nuevo array spliteado por ; 
-    //para sacar los datosy trim para quitar espacios en blanco
-    foreach ($lineas as $linea) {
-        $campos = array_map("trim", explode(";", $linea));
-        if (count($campos) !== 4) {
-            //si no se ha leido bien, se salta a la siguiente vuelta del foreach
-            continue;   
-        }
-        try {
-            $puntos[] = new Punto((int)$campos[0], (int)$campos[1], $campos[2], (int)$campos[3]);
-        } catch (Exception $e) {
-            // línea con valores no válidos: se ignora
-        }
-    }
-
-    return $puntos;
-}
-
-/**
- * Escribe dentro de mi fichero una línea guardando el nuevo punto con el formato que yo quier
- * el LOCK_EX bloquea el fichero mientras estamos escribiendo para que no se corrompa si hay 2
- * peticiones simultáneas
- *
- * @param string $ruta
- * @param array $puntos
- * @return void
- */
-function guardarPuntos(string $ruta, array $puntos): void
-{
-    $contenido = "";
-    foreach ($puntos as $p) {
-        $contenido .= $p->getX() . " ; " . $p->getY() . " ; " . $p->getColor() . " ; " . $p->getGrosor() . "\n";
-    }
-    file_put_contents($ruta, $contenido, LOCK_EX);
-}
-
-/**
- * Función que me crea el nombre de mi imagen dependiendo de la ip y del navegador que se abra
- *
- * @return string
- */
-function nombreImagen(): string
-{
-    $ip = str_replace([".", ":"], "_", $_SERVER["REMOTE_ADDR"] ?? "desconocida");
-    $agente = $_SERVER["HTTP_USER_AGENT"] ?? "";
-
-    // El orden importa: Edge y Opera también dicen "Chrome", y Chrome también dice "Safari"
-    if (mb_stripos($agente, "Edg") !== false) {
-        $navegador = "edge";
-    } elseif (mb_stripos($agente, "OPR") !== false || mb_stripos($agente, "Opera") !== false) {
-        $navegador = "opera";
-    } elseif (mb_stripos($agente, "Firefox") !== false) {
-        $navegador = "firefox";
-    } elseif (mb_stripos($agente, "Chrome") !== false) {
-        $navegador = "chrome";
-    } elseif (mb_stripos($agente, "Safari") !== false) {
-        $navegador = "safari";
-    } else {
-        $navegador = "otro";
-    }
-
-    return "imagen_" . $ip . "_" . $navegador . ".jpg";
-}
-
-
-/**
- * Función para dibujar la imagen
- * Primero creamos el lienzo con fondo blanco que es la imagne basicamente
- * Después sobre ella pintamos los puntos
- * y arriba esta el rectangulo que son los bordes
- *
- * @param string $ruta
- * @param array $puntos
- * @return void
- */
-function dibujaImagen(string $ruta, array $puntos): void
-{
-    //Creamos el lienzo donde va a estar la imagen de 500px x 500px
-    $imagen = imagecreatetruecolor(500, 500);
-    //En gd tenemos que crear los colores antes de usarlos, en las dos lineas creamos los colores
-    $blanco = imagecolorallocate($imagen, 255, 255, 255);
-    $negro = imagecolorallocate($imagen, 0, 0, 0);
-    //pintamos el fondo de color blanco, empieza en el pixel 0,0
-    imagefill($imagen, 0, 0, $blanco);
-
-    //Dibujamos cada punto
-    foreach ($puntos as $p) {
-        //cogemos el color con el que se tiene que dibujar el punto
-        $rgb = Punto::COLORES[$p->getColor()]["rgb"];
-        //guardamos el color en el gd
-        $color = imagecolorallocate($imagen, $rgb[0], $rgb[1], $rgb[2]);
-        //guardamos el diametro que viene en el punto
-        $diametro = $p->getGrosor() * 4;   // fino 4px, medio 8px, grueso 12px
-        //dibuja la elipse del punto es decir el punto siendo el centro x e y, el diametro al ser 
-        //el mismo se dibuja un circulo
-        imagefilledellipse($imagen, $p->getX(), $p->getY(), $diametro, $diametro, $color);
-    }
-
-    //este rectangulo está encima de todo y es simplemente el borde
-    imagerectangle($imagen, 0, 0, 499, 499, $negro);   // marco
-    //guardamos el fichero
-    imagejpeg($imagen, $ruta);
+function formularioCargaFichero():string{
+    ob_start()
+    ?>
+    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
+    <label>Fichero:
+        <input type="file" name="fichero" accept=".txt">
+    </label>
+    <button type="submit" name="subir">Subir</button>
+</form>
+<?php
+return ob_get_clean();
 }
