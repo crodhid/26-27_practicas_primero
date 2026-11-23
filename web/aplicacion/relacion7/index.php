@@ -182,6 +182,15 @@ function cuerpo($arrayColores, $arrayGrosores, $datos, $errores, $mensaje, $punt
 <?php
 }
 
+/**
+ * Función para el primer formulario
+ *
+ * @param [type] $arrayColores
+ * @param [type] $arrayGrosores
+ * @param [type] $datos
+ * @param [type] $errores
+ * @return string
+ */
 function formulario($arrayColores, $arrayGrosores, $datos, $errores): string
 {
 
@@ -237,7 +246,12 @@ function formulario($arrayColores, $arrayGrosores, $datos, $errores): string
 
 
 
-
+/**
+ * Función para el formulario de los puntos
+ *
+ * @param array $arrayPuntos
+ * @return string
+ */
 function formularioPuntos(array $arrayPuntos): string
 {
     ob_start();
